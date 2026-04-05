@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>🚀 RUTAS AI PRO - ULTRA EDITION</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a12; color: white; display: flex; justify-content: center; padding: 20px; }
+        .main-container { display: flex; gap: 20px; max-width: 1000px; width: 100%; flex-wrap: wrap; }
+        
+        .panel { background: #16213e; padding: 25px; border-radius: 20px; box-shadow: 0 0 30px rgba(233, 69, 96, 0.2); width: 340px; border: 1px solid #1f4068; }
+        h2 { color: #e94560; text-align: center; text-shadow: 0 0 10px #e94560; margin-bottom: 20px; }
+        
+        input { width: 90%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #0a0a12; color: #00d4ff; font-weight: bold; }
+        
+        button { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 10px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; text-transform: uppercase; }
+        .btn-add { background: #00d4ff; color: #0a0a12; box-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
+        .btn-analizar { background: #e94560; box-shadow: 0 0 10px rgba(233, 69, 96, 0.4); }
+        .btn-clear { background: #444; margin-top: 15px; font-size: 11px; }
+        
+        button:hover { transform: translateY(-2px); filter: brightness(1.2); }
+
+        .ruta-card { background: #1b1b2f; padding: 15px; margin-top: 10px; border-radius: 12px; border-left: 5px solid #00d4ff; position: relative; animation: slide 0.3s ease; }
+        @keyframes slide { from { opacity:0; transform: translateX(-10px); } }
+        
+        .btn-del-item { position: absolute; right: 10px; top: 10px; color: #ff4d4d; cursor: pointer; font-size: 18px; }
+
+        #ganador { display: none; background: #091c09; border: 2px solid #2ecc71; padding: 15px; border-radius: 12px; margin-bottom: 15px; color: #2ecc71; text-align: center; box-shadow: 0 0 20px rgba(46, 204, 113, 0.3); }
+
+        .map-panel { flex: 1; min-width: 350px; background: #16213e; border-radius: 20px; padding: 15px; height: 500px; display: flex; flex-direction: column; }
+        iframe { width: 100%; height: 100%; border-radius: 15px; border: 2px solid #1b1b2f; background: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="panel">
+            <h2>🚗 RUTA AI PRO</h2>
+            <div id="ganador"></div>
+
+            <input type="text" id="origen" placeholder="📍 Origen">
+            <input type="text" id="destino" placeholder="🏁 Destino">
+            <input type="number" id="gas" placeholder="💰 Precio Gasolina/Litro" value="24">
+
+            <button class="btn-add" onclick="agregarRuta()">✚ AUTO-CALCULAR RUTA</button>
+            <button class="btn-analizar" onclick="analizar()">⚡ ANALIZAR MEJOR OPCIÓN</button>
+            
+            <div id="lista-rutas"></div>
+            
+            <button class="btn-clear" onclick="limpiarTodo()">🗑️ BORRAR TODAS LAS RUTAS</button>
+        </div>
+
+        <div class="map-panel">
+            <h2 style="color: #00d4ff;">🗺️ VISOR SATELITAL</h2>
+            <iframe id="googleMap" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <script>
+        var misRutas = [];
+
+        function agregarRuta() {
+            var o = document.getElementById("origen").value;
+            var d = document.getElementById("destino").value;
+            var g = document.getElementById("gas").value;
+
+            if (o == "" || d == "") {
+                alert("Escribe origen y destino");
+                return;
+            }
+
+            // --- LÓGICA DE LA IA ---
+            var tiempo = Math.floor(Math.random() * (70 - 10 + 1)) + 10;
+            var kms = (tiempo * 0.85).toFixed(1); // Simula KM según el tiempo
+            var costo = (tiempo * 1.8 * (parseFloat(g) / 24)).toFixed(2);
+            var id = Date.now();
+
+            misRutas.push({ id, ori: o, des: d, tie: tiempo, km: kms, cos: costo });
+
+            renderizarLista();
+            
+            // Actualizar mapa
+            document.getElementById("googleMap").src = "https://www.google.com/maps?q=" + o + "+to+" + d + "&output=embed";
+
+            // Limpiar inputs
+            document.getElementById("origen").value = "";
+            document.getElementById("destino").value = "";
+        }
+
+        function renderizarLista() {
+            var lista = document.getElementById("lista-rutas");
+            lista.innerHTML = "";
+            misRutas.forEach(function(r) {
+                lista.innerHTML += `
+                    <div class="ruta-card">
+                        <span class="btn-del-item" onclick="borrarIndividual(${r.id})">×</span>
+                        <b>${r.ori} ➔ ${r.des}</b><br>
+                        <span style="color:#00d4ff">⏱️ ${r.tie} min | 📏 ${r.km} km</span><br>
+                        <span style="color:#2ecc71">💰 Est. $${r.cos}</span>
+                    </div>`;
+            });
+        }
+
+        function analizar() {
+            if (misRutas.length == 0) return alert("Agrega rutas primero");
+            
+            var mejor = misRutas[0];
+            misRutas.forEach(r => { if(r.tie < mejor.tie) mejor = r; });
+
+            var res = document.getElementById("ganador");
+            res.style.display = "block";
+            res.innerHTML = "🏆 GANADORA: " + mejor.ori + " a " + mejor.des + "<br>" + mejor.tie + " min | " + mejor.km + " km";
+        }
+
+        function borrarIndividual(id) {
+            misRutas = misRutas.filter(r => r.id !== id);
+            renderizarLista();
+            document.getElementById("ganador").style.display = "none";
+        }
+
+        function limpiarTodo() {
+            if(confirm("¿Seguro que quieres borrar todas las rutas?")) {
+                misRutas = [];
+                renderizarLista();
+                document.getElementById("ganador").style.display = "none";
+                document.getElementById("googleMap").src = "about:blank";
+            }
+        }
+    </script>
+</body>
+</html>
