@@ -2,129 +2,227 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>🚀 RUTAS AI PRO - ULTRA EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 RUTAS AI PRO - PLATINUM EDITION</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0a0a12; color: white; display: flex; justify-content: center; padding: 20px; }
-        .main-container { display: flex; gap: 20px; max-width: 1000px; width: 100%; flex-wrap: wrap; }
-        
-        .panel { background: #16213e; padding: 25px; border-radius: 20px; box-shadow: 0 0 30px rgba(233, 69, 96, 0.2); width: 340px; border: 1px solid #1f4068; }
-        h2 { color: #e94560; text-align: center; text-shadow: 0 0 10px #e94560; margin-bottom: 20px; }
-        
-        input { width: 90%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #0a0a12; color: #00d4ff; font-weight: bold; }
-        
-        button { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 10px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; text-transform: uppercase; }
-        .btn-add { background: #00d4ff; color: #0a0a12; box-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
-        .btn-analizar { background: #e94560; box-shadow: 0 0 10px rgba(233, 69, 96, 0.4); }
-        .btn-clear { background: #444; margin-top: 15px; font-size: 11px; }
-        
-        button:hover { transform: translateY(-2px); filter: brightness(1.2); }
+        :root {
+            --primary: #00d4ff; --secondary: #7000ff; --accent: #2ecc71;
+            --danger: #e94560; --bg: #05050a; --card-bg: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+        }
 
-        .ruta-card { background: #1b1b2f; padding: 15px; margin-top: 10px; border-radius: 12px; border-left: 5px solid #00d4ff; position: relative; animation: slide 0.3s ease; }
-        @keyframes slide { from { opacity:0; transform: translateX(-10px); } }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        .sidebar {
+            width: 420px; background: rgba(10, 10, 25, 0.95); backdrop-filter: blur(20px);
+            padding: 25px; border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-direction: column; overflow-y: auto; z-index: 100; box-shadow: 15px 0 50px rgba(0,0,0,0.8);
+        }
+
+        h1 { font-size: 22px; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 20px; letter-spacing: 2px; }
+
+        .input-group { margin-bottom: 12px; }
+        label { font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; display: block; opacity: 0.8; }
         
-        .btn-del-item { position: absolute; right: 10px; top: 10px; color: #ff4d4d; cursor: pointer; font-size: 18px; }
+        input, select {
+            width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); background: rgba(255,255,255,0.1); }
 
-        #ganador { display: none; background: #091c09; border: 2px solid #2ecc71; padding: 15px; border-radius: 12px; margin-bottom: 15px; color: #2ecc71; text-align: center; box-shadow: 0 0 20px rgba(46, 204, 113, 0.3); }
+        .vehicle-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .v-option {
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.3s;
+        }
+        .v-option.active { border-color: var(--primary); background: rgba(0, 212, 255, 0.15); box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
+        .v-option span { display: block; font-size: 22px; }
 
-        .map-panel { flex: 1; min-width: 350px; background: #16213e; border-radius: 20px; padding: 15px; height: 500px; display: flex; flex-direction: column; }
-        iframe { width: 100%; height: 100%; border-radius: 15px; border: 2px solid #1b1b2f; background: #fff; }
+        button {
+            width: 100%; padding: 16px; border: none; border-radius: 10px; font-weight: 800;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px;
+        }
+        .btn-calc { background: linear-gradient(45deg, var(--secondary), var(--primary)); color: white; box-shadow: 0 4px 15px rgba(112, 0, 255, 0.3); }
+        .btn-ws { background: #25d366; color: white; display: none; margin-top: 15px; }
+
+        .results {
+            margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.08); display: none; animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-card { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-card small { display: block; font-size: 9px; color: var(--primary); margin-bottom: 4px; }
+        .stat-card div { font-size: 16px; font-weight: bold; }
+
+        /* Progress Bar */
+        .cost-bar-container { height: 8px; background: #222; border-radius: 4px; margin: 15px 0; overflow: hidden; display: flex; }
+        .bar-fuel { background: var(--secondary); height: 100%; }
+        .bar-toll { background: var(--primary); height: 100%; }
+
+        .total-box { font-size: 30px; text-align: center; color: var(--accent); font-weight: 900; margin: 15px 0; text-shadow: 0 0 20px rgba(46, 204, 113, 0.3); }
+
+        .eco-tag { font-size: 11px; background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 5px 10px; border-radius: 20px; display: inline-block; margin-top: 10px; }
+
+        #map-container { flex: 1; }
+        iframe { width: 100%; height: 100%; border: none; filter: invert(90%) hue-rotate(180deg) brightness(0.95); }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <div class="panel">
-            <h2>🚗 RUTA AI PRO</h2>
-            <div id="ganador"></div>
+<div class="sidebar">
+    <h1>RUTA AI PLATINUM</h1>
+    
+    <div class="input-group">
+        <label>📍 Punto de Partida</label>
+        <input type="text" id="o" list="cities" placeholder="Ciudad de Origen">
+    </div>
 
-            <input type="text" id="origen" placeholder="📍 Origen">
-            <input type="text" id="destino" placeholder="🏁 Destino">
-            <input type="number" id="gas" placeholder="💰 Precio Gasolina/Litro" value="24">
+    <div class="input-group">
+        <label>🏁 Punto de Destino</label>
+        <input type="text" id="d" list="cities" placeholder="Ciudad de Destino">
+    </div>
 
-            <button class="btn-add" onclick="agregarRuta()">✚ AUTO-CALCULAR RUTA</button>
-            <button class="btn-analizar" onclick="analizar()">⚡ ANALIZAR MEJOR OPCIÓN</button>
-            
-            <div id="lista-rutas"></div>
-            
-            <button class="btn-clear" onclick="limpiarTodo()">🗑️ BORRAR TODAS LAS RUTAS</button>
+    <label>🚜 Vehículo y Rendimiento</label>
+    <div class="vehicle-selector">
+        <div class="v-option" onclick="setVehicle('moto', 25, 0.5, this)"><span>🏍️</span><small>MOTO</small></div>
+        <div class="v-option active" onclick="setVehicle('auto', 12, 1, this)"><span>🚗</span><small>AUTO</small></div>
+        <div class="v-option" onclick="setVehicle('heavy', 4, 3.5, this)"><span>🚛</span><small>CARGA</small></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group">
+            <label>⛽ Precio L</label>
+            <input type="number" id="p" value="24.50">
         </div>
-
-        <div class="map-panel">
-            <h2 style="color: #00d4ff;">🗺️ VISOR SATELITAL</h2>
-            <iframe id="googleMap" src="about:blank"></iframe>
+        <div class="input-group">
+            <label>🔄 Redondo</label>
+            <select id="round-trip" onchange="calcular()">
+                <option value="1">Solo Ida</option>
+                <option value="2">Ida y Vuelta</option>
+            </select>
         </div>
     </div>
 
-    <script>
-        var misRutas = [];
+    <button class="btn-calc" onclick="calcular()">Analizar Ruta Inteligente</button>
+    
+    <div id="res-box" class="results">
+        <div class="stats-grid">
+            <div class="stat-card"><small>TIEMPO EST.</small><div id="time-txt">--</div></div>
+            <div class="stat-card"><small>DISTANCIA</small><div id="dist-txt">--</div></div>
+        </div>
 
-        function agregarRuta() {
-            var o = document.getElementById("origen").value;
-            var d = document.getElementById("destino").value;
-            var g = document.getElementById("gas").value;
+        <label>Desglose de Gastos (Gasolina vs Casetas)</label>
+        <div class="cost-bar-container">
+            <div id="bar-fuel" class="bar-fuel" style="width: 50%;"></div>
+            <div id="bar-toll" class="bar-toll" style="width: 50%;"></div>
+        </div>
 
-            if (o == "" || d == "") {
-                alert("Escribe origen y destino");
-                return;
-            }
+        <div class="res-item" style="display:flex; justify-content:space-between; font-size:12px; opacity:0.7;">
+            <span>Combustible: <b id="fuel-txt"></b></span>
+            <span>Casetas: <b id="toll-txt"></b></span>
+        </div>
 
-            // --- LÓGICA DE LA IA ---
-            var tiempo = Math.floor(Math.random() * (70 - 10 + 1)) + 10;
-            var kms = (tiempo * 0.85).toFixed(1); // Simula KM según el tiempo
-            var costo = (tiempo * 1.8 * (parseFloat(g) / 24)).toFixed(2);
-            var id = Date.now();
+        <div class="total-box" id="total-txt">$0.00</div>
+        
+        <div style="text-align: center;">
+            <div class="eco-tag">🍃 Huella CO2: <span id="co2-txt">0</span> kg</div>
+        </div>
 
-            misRutas.push({ id, ori: o, des: d, tie: tiempo, km: kms, cos: costo });
+        <button class="btn-ws" id="btn-ws" onclick="shareWS()">📱 Enviar Reporte a WhatsApp</button>
+    </div>
 
-            renderizarLista();
-            
-            // Actualizar mapa
-            document.getElementById("googleMap").src = "https://www.google.com/maps?q=" + o + "+to+" + d + "&output=embed";
+    <datalist id="cities">
+        <option value="Ciudad de México"> <option value="Guadalajara"> <option value="Monterrey">
+        <option value="Puebla"> <option value="Querétaro"> <option value="Acapulco">
+        <option value="Cancún"> <option value="Mérida"> <option value="San Luis Potosí">
+    </datalist>
+</div>
 
-            // Limpiar inputs
-            document.getElementById("origen").value = "";
-            document.getElementById("destino").value = "";
-        }
+<div id="map-container">
+    <iframe id="mapa" src="https://maps.google.com/maps?q=Mexico&output=embed"></iframe>
+</div>
 
-        function renderizarLista() {
-            var lista = document.getElementById("lista-rutas");
-            lista.innerHTML = "";
-            misRutas.forEach(function(r) {
-                lista.innerHTML += `
-                    <div class="ruta-card">
-                        <span class="btn-del-item" onclick="borrarIndividual(${r.id})">×</span>
-                        <b>${r.ori} ➔ ${r.des}</b><br>
-                        <span style="color:#00d4ff">⏱️ ${r.tie} min | 📏 ${r.km} km</span><br>
-                        <span style="color:#2ecc71">💰 Est. $${r.cos}</span>
-                    </div>`;
-            });
-        }
+<script>
+    let currentTollMult = 1;
+    let avgSpeed = 95; // km/h
+    let lastResult = {};
 
-        function analizar() {
-            if (misRutas.length == 0) return alert("Agrega rutas primero");
-            
-            var mejor = misRutas[0];
-            misRutas.forEach(r => { if(r.tie < mejor.tie) mejor = r; });
+    function setVehicle(type, rend, tollMult, el) {
+        document.querySelectorAll('.v-option').forEach(opt => opt.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('r-hidden').value = rend; // Rendimiento oculto o dinámico
+        currentTollMult = tollMult;
+        avgSpeed = type === 'heavy' ? 75 : 95;
+        calcular();
+    }
 
-            var res = document.getElementById("ganador");
-            res.style.display = "block";
-            res.innerHTML = "🏆 GANADORA: " + mejor.ori + " a " + mejor.des + "<br>" + mejor.tie + " min | " + mejor.km + " km";
-        }
+    // Rendimiento dinámico oculto
+    const hiddenRend = document.createElement('input');
+    hiddenRend.id = 'r-hidden'; hiddenRend.type = 'hidden'; hiddenRend.value = '12';
+    document.body.appendChild(hiddenRend);
 
-        function borrarIndividual(id) {
-            misRutas = misRutas.filter(r => r.id !== id);
-            renderizarLista();
-            document.getElementById("ganador").style.display = "none";
-        }
+    function calcular() {
+        const ori = document.getElementById('o').value.trim();
+        const des = document.getElementById('d').value.trim();
+        const pre = parseFloat(document.getElementById('p').value);
+        const ren = parseFloat(document.getElementById('r-hidden').value);
+        const mult = parseInt(document.getElementById('round-trip').value);
 
-        function limpiarTodo() {
-            if(confirm("¿Seguro que quieres borrar todas las rutas?")) {
-                misRutas = [];
-                renderizarLista();
-                document.getElementById("ganador").style.display = "none";
-                document.getElementById("googleMap").src = "about:blank";
-            }
-        }
-    </script>
+        if(!ori || !des) return;
+
+        // Base de datos de distancias
+        const DB = { 
+            "Ciudad de México-Guadalajara": 550, "Ciudad de México-Acapulco": 380,
+            "Ciudad de México-Monterrey": 900, "Ciudad de México-Puebla": 135,
+            "Ciudad de México-Querétaro": 213, "Guadalajara-Monterrey": 790
+        };
+
+        let km = (DB[`${ori}-${des}`] || DB[`${des}-${ori}`] || Math.floor(Math.abs(ori.length - des.length) * 45 + 150)) * mult;
+        let baseCasetas = (km * 1.1) * currentTollMult; // Estimación inteligente
+
+        const costoFuel = (km / ren) * pre;
+        const total = costoFuel + baseCasetas;
+        
+        // Tiempo estimado
+        const horas = Math.floor(km / avgSpeed);
+        const minutos = Math.round(((km / avgSpeed) - horas) * 60);
+
+        // CO2: ~2.31 kg por litro de gasolina
+        const co2 = (km / ren) * 2.31;
+
+        // UI
+        document.getElementById('res-box').style.display = 'block';
+        document.getElementById('dist-txt').innerText = `${km} KM`;
+        document.getElementById('time-txt').innerText = `${horas}h ${minutos}m`;
+        document.getElementById('fuel-txt').innerText = `$${costoFuel.toFixed(0)}`;
+        document.getElementById('toll-txt').innerText = `$${baseCasetas.toFixed(0)}`;
+        document.getElementById('total-txt').innerText = `$${total.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+        document.getElementById('co2-txt').innerText = co2.toFixed(1);
+
+        // Visual Bar
+        const fuelPer = (costoFuel / total) * 100;
+        document.getElementById('bar-fuel').style.width = fuelPer + "%";
+        document.getElementById('bar-toll').style.width = (100 - fuelPer) + "%";
+
+        document.getElementById('btn-ws').style.display = 'block';
+        document.getElementById('mapa').src = `https://www.google.com/maps?q=${encodeURIComponent(ori)}+to+${encodeURIComponent(des)}&output=embed`;
+
+        lastResult = { ori, des, km, total, time: `${horas}h ${minutos}m`, co2: co2.toFixed(1) };
+    }
+
+    function shareWS() {
+        const msg = `📍 *LOGÍSTICA DE VIAJE AI*\n\n` +
+                    `🚩 *Ruta:* ${lastResult.ori} ➔ ${lastResult.des}\n` +
+                    `📏 *Distancia:* ${lastResult.km} KM\n` +
+                    `⏱️ *Tiempo:* ${lastResult.time}\n` +
+                    `💰 *Presupuesto Total:* $${lastResult.total.toFixed(2)}\n` +
+                    `🍃 *CO2:* ${lastResult.co2} kg\n\n` +
+                    `_Generado por Ruta AI Platinum_`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+</script>
+
 </body>
 </html>
