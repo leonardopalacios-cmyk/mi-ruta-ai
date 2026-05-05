@@ -3,115 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 RUTAS AI - ULTRA LOGISTICS</title>
+    <title>🚀 RUTA AI TITANIUM - ELITE EDITION</title>
     <style>
         :root {
-            --primary: #00d4ff; --secondary: #7000ff; --accent: #2ecc71;
-            --danger: #e94560; --bg: #05050a; --card-bg: rgba(255, 255, 255, 0.05);
+            /* MODO OSCURO (Default) */
+            --bg: #05050a;
+            --sidebar-bg: rgba(10, 10, 25, 0.95);
             --text: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --primary: #00d4ff;
+            --secondary: #7000ff;
+            --accent: #2ecc71;
+            --map-filter: invert(90%) hue-rotate(180deg);
         }
 
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        [data-theme="light"] {
+            --bg: #f0f2f5;
+            --sidebar-bg: rgba(255, 255, 255, 0.95);
+            --text: #1a1a1a;
+            --card-bg: rgba(0, 0, 0, 0.05);
+            --primary: #007bff;
+            --secondary: #6610f2;
+            --accent: #28a745;
+            --map-filter: none;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.3s; }
 
         .sidebar {
-            width: 420px; background: rgba(10, 10, 25, 0.95); backdrop-filter: blur(20px);
-            padding: 25px; border-right: 1px solid rgba(255, 255, 255, 0.1);
+            width: 400px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
+            padding: 25px; border-right: 1px solid rgba(128, 128, 128, 0.2);
             display: flex; flex-direction: column; overflow-y: auto; z-index: 100;
         }
 
-        h1 { font-size: 20px; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 20px; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { font-size: 18px; font-weight: 900; margin: 0; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .theme-toggle { cursor: pointer; font-size: 20px; background: none; border: none; padding: 5px; }
 
         .input-group { margin-bottom: 12px; }
         label { font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; display: block; }
         
-        input, select {
-            width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;
+        input {
+            width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 8px; color: var(--text); font-size: 14px; outline: none; box-sizing: border-box;
         }
 
-        /* Panel de Clima */
-        .weather-panel {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
-            border-radius: 12px; padding: 15px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);
-            display: none; transition: 0.5s;
+        .vehicle-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .v-option {
+            background: var(--card-bg); border: 1px solid rgba(128, 128, 128, 0.2);
+            padding: 10px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.3s;
         }
-        .weather-info { display: flex; align-items: center; justify-content: space-between; }
-        .temp { font-size: 24px; font-weight: 900; color: var(--primary); }
-        .condition { font-size: 12px; text-transform: uppercase; opacity: 0.8; }
+        .v-option.active { border-color: var(--primary); background: rgba(0, 212, 255, 0.1); transform: scale(1.05); }
 
-        .safety-alert {
-            font-size: 11px; padding: 8px; border-radius: 6px; margin-top: 10px;
-            display: flex; align-items: center; gap: 8px;
+        .weather-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border-radius: 12px; padding: 15px; margin-top: 15px; display: none;
         }
-        .alert-ok { background: rgba(46, 204, 113, 0.1); color: var(--accent); }
-        .alert-warn { background: rgba(233, 69, 96, 0.1); color: var(--danger); }
 
-        /* Botones y Resultados */
-        button {
+        button.main-btn {
             width: 100%; padding: 16px; border: none; border-radius: 10px; font-weight: 800;
-            cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px;
+            cursor: pointer; background: linear-gradient(45deg, var(--secondary), var(--primary)); color: white;
+            text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .btn-calc { background: linear-gradient(45deg, var(--secondary), var(--primary)); color: white; }
 
-        .results { margin-top: 20px; display: none; animation: fadeIn 0.5s ease; }
-        .total-box { font-size: 32px; text-align: center; color: var(--accent); font-weight: 900; margin: 15px 0; }
+        .results { margin-top: 20px; padding: 15px; background: var(--card-bg); border-radius: 12px; display: none; }
+        .total-val { font-size: 28px; text-align: center; color: var(--accent); font-weight: 900; margin: 10px 0; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; text-align: center; }
-        .stat-card small { display: block; font-size: 9px; color: var(--primary); margin-bottom: 4px; }
-
-        #map-container { flex: 1; }
-        iframe { width: 100%; height: 100%; border: none; filter: invert(90%) hue-rotate(180deg); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #map-container { flex: 1; position: relative; }
+        iframe { width: 100%; height: 100%; border: none; filter: var(--map-filter); transition: 0.5s; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h1>RUTA AI ULTRA-LOGISTICS</h1>
+    <div class="header-flex">
+        <h1>TITANIUM LOGISTICS</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
     
     <div class="input-group">
         <label>📍 Origen</label>
-        <input type="text" id="o" placeholder="Ej: Ciudad de México">
+        <input type="text" id="o" list="cities" placeholder="Ciudad de inicio">
     </div>
 
     <div class="input-group">
         <label>🏁 Destino</label>
-        <input type="text" id="d" placeholder="Ej: Guadalajara">
+        <input type="text" id="d" list="cities" placeholder="Ciudad de llegada">
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div class="input-group">
-            <label>⛽ Gasolina $/L</label>
-            <input type="number" id="p" value="24.50">
-        </div>
-        <div class="input-group">
-            <label>🏎️ Rendimiento</label>
-            <input type="number" id="r" value="12">
-        </div>
+    <datalist id="cities">
+        <option value="Ciudad de México"> <option value="Guadalajara"> <option value="Monterrey">
+        <option value="Puebla"> <option value="Querétaro"> <option value="Acapulco">
+        <option value="Toluca"> <option value="León"> <option value="Veracruz">
+        <option value="Cancún"> <option value="Mérida"> <option value="San Luis Potosí">
+    </datalist>
+
+    <label>🚜 Vehículo</label>
+    <div class="vehicle-selector">
+        <div class="v-option" onclick="selectV('moto', 25, 0.5, this)"><span>🏍️</span><br><small>MOTO</small></div>
+        <div class="v-option active" onclick="selectV('auto', 12, 1, this)"><span>🚗</span><br><small>AUTO</small></div>
+        <div class="v-option" onclick="selectV('truck', 4, 3.5, this)"><span>🚛</span><br><small>CARGA</small></div>
     </div>
 
-    <button class="btn-calc" onclick="procesarRuta()">Calcular con Clima Real</button>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <input type="number" id="p" value="24.50" step="0.1" title="Precio Gasolina">
+        <input type="number" id="r" value="12" title="Rendimiento">
+    </div>
 
-    <div id="weather-panel" class="weather-panel">
-        <div class="condition" id="dest-label">CLIMA EN DESTINO</div>
-        <div class="weather-info">
-            <span id="weather-icon" style="font-size: 40px;">☀️</span>
-            <span class="temp" id="temp-txt">--°C</span>
+    <button class="main-btn" onclick="ejecutarTodo()">Calcular Ruta Pro</button>
+
+    <div id="weather-box" class="weather-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="w-city" style="font-weight: bold; font-size: 12px;">CLIMA</span>
+            <span id="w-temp" style="font-size: 20px; font-weight: 900;">--°C</span>
         </div>
-        <div id="safety-box" class="safety-alert alert-ok">
-            ✅ Condiciones óptimas para conducir
-        </div>
+        <div id="w-desc" style="font-size: 11px; margin-top: 5px;">Cargando...</div>
     </div>
 
     <div id="res-box" class="results">
-        <div class="stats-grid">
-            <div class="stat-card"><small>DISTANCIA</small><div id="dist-txt">--</div></div>
-            <div class="stat-card"><small>TIEMPO (ETA)</small><div id="time-txt">--</div></div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; opacity: 0.8;">
+            <span>📏 <span id="dist-txt"></span></span>
+            <span>⏱️ <span id="time-txt"></span></span>
         </div>
-        <div class="total-box" id="total-txt">$0.00</div>
-        <button style="background:#25d366; color:white; font-size:12px;" onclick="compartir()">Enviar por WhatsApp</button>
+        <div style="margin-top:10px; font-size: 12px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 5px;">
+            ⛽ Gas: <span id="fuel-txt"></span> | 🛣️ Casetas: <span id="toll-txt"></span>
+        </div>
+        <div class="total-val" id="total-txt">$0.00</div>
+        <button style="width:100%; padding:10px; background:#25d366; color:white; border:none; border-radius:5px; font-weight:bold;" onclick="ws()">WhatsApp</button>
     </div>
 </div>
 
@@ -120,95 +139,102 @@
 </div>
 
 <script>
-    async function procesarRuta() {
+    let tollMult = 1;
+    let weatherSpeedFactor = 1;
+
+    function toggleTheme() {
+        const body = document.body;
+        const current = body.getAttribute('data-theme');
+        body.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function selectV(type, rend, mult, el) {
+        document.querySelectorAll('.v-option').forEach(opt => opt.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('r').value = rend;
+        tollMult = mult;
+    }
+
+    async function ejecutarTodo() {
         const ori = document.getElementById('o').value;
         const des = document.getElementById('d').value;
-        if(!ori || !des) return alert("Ingresa datos");
+        if(!ori || !des) return alert("Faltan ciudades");
 
-        // 1. Obtener Clima
-        await obtenerClima(des);
-
-        // 2. Calcular Lógica de Viaje
-        calcularViaje(ori, des);
-        
-        // 3. Actualizar Mapa
+        // 1. Mapa
         document.getElementById('mapa').src = `https://www.google.com/maps?q=${encodeURIComponent(ori)}+to+${encodeURIComponent(des)}&output=embed`;
-    }
 
-    async function obtenerClima(ciudad) {
+        // 2. Clima Real
         try {
-            // Geocoding simple con OpenStreetMap (Gratis)
-            const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ciudad)}`);
-            const geoData = await geoRes.json();
-            
-            if(geoData.length > 0) {
-                const { lat, lon } = geoData[0];
-                
-                // Clima con Open-Meteo (Gratis)
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-                const weatherData = await weatherRes.json();
-                
-                const temp = weatherData.current_weather.temperature;
-                const code = weatherData.current_weather.weathercode;
-
-                actualizarUIClima(temp, code, ciudad);
+            const geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(des)}`);
+            const gData = await geo.json();
+            if(gData[0]) {
+                const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${gData[0].lat}&longitude=${gData[0].lon}&current_weather=true`);
+                const wData = await w.json();
+                mostrarClima(wData.current_weather, des);
             }
-        } catch (e) {
-            console.error("Error de clima", e);
-        }
+        } catch(e) { console.log("Error clima"); }
+
+        // 3. Cálculos (Casetas + Distancia)
+        calcularLogistica(ori, des);
     }
 
-    function actualizarUIClima(temp, code, ciudad) {
-        const panel = document.getElementById('weather-panel');
-        const tempTxt = document.getElementById('temp-txt');
-        const icon = document.getElementById('weather-icon');
-        const safety = document.getElementById('safety-box');
+    function mostrarClima(data, ciudad) {
+        document.getElementById('weather-box').style.display = 'block';
+        document.getElementById('w-temp').innerText = `${data.temperature}°C`;
+        document.getElementById('w-city').innerText = ciudad.toUpperCase();
         
-        panel.style.display = 'block';
-        tempTxt.innerText = `${temp}°C`;
-        document.getElementById('dest-label').innerText = `CLIMA EN ${ciudad.toUpperCase()}`;
-
-        // Lógica de iconos y seguridad basada en Weather Codes
-        if(code >= 51) { // Lluvia / Nieve
-            icon.innerText = "🌧️";
-            safety.innerHTML = "⚠️ Lluvia detectada. Reducir velocidad.";
-            safety.className = "safety-alert alert-warn";
-            window.weatherFactor = 0.8; // Reduce velocidad 20%
+        if(data.weathercode >= 51) {
+            document.getElementById('w-desc').innerText = "⚠️ Lluvia detectada: Maneje con precaución.";
+            weatherSpeedFactor = 0.7;
         } else {
-            icon.innerText = "☀️";
-            safety.innerHTML = "✅ Condiciones óptimas para conducir";
-            safety.className = "safety-alert alert-ok";
-            window.weatherFactor = 1;
+            document.getElementById('w-desc').innerText = "☀️ Cielo despejado: Buen viaje.";
+            weatherSpeedFactor = 1;
         }
     }
 
-    function calcularViaje(ori, des) {
+    function calcularLogistica(ori, des) {
         const pre = parseFloat(document.getElementById('p').value);
         const ren = parseFloat(document.getElementById('r').value);
-        
-        // Distancia simulada (En un entorno real usarías Distance Matrix API)
-        const km = Math.floor(Math.abs(ori.length + des.length) * 15); 
-        const casetas = Math.floor(km * 1.2);
-        const fuel = (km / ren) * pre;
-        const total = fuel + casetas;
 
-        // Tiempo ajustado por clima
-        let velocidadBase = 95;
-        let tiempoDecimal = km / (velocidadBase * (window.weatherFactor || 1));
-        let horas = Math.floor(tiempoDecimal);
-        let mins = Math.round((tiempoDecimal - horas) * 60);
+        // Base de Datos de Casetas Reales
+        const DB = {
+            "Ciudad de México-Puebla": { km: 135, cas: 204 },
+            "Ciudad de México-Guadalajara": { km: 550, cas: 1100 },
+            "Ciudad de México-Querétaro": { km: 213, cas: 216 },
+            "Ciudad de México-Acapulco": { km: 380, cas: 640 },
+            "Ciudad de México-Monterrey": { km: 900, cas: 1500 },
+            "Toluca-Ciudad de México": { km: 65, cas: 111 }
+        };
+
+        const key = `${ori}-${des}`;
+        const invKey = `${des}-${ori}`;
+        let info = DB[key] || DB[invKey];
+
+        let km = info ? info.km : (Math.abs(ori.length + des.length) * 18);
+        let baseToll = info ? info.cas : (km * 1.1);
+        
+        let tollFinal = baseToll * tollMult;
+        let fuelFinal = (km / ren) * pre;
+        let total = tollFinal + fuelFinal;
+
+        // Tiempo
+        let horas = (km / (90 * weatherSpeedFactor));
+        let h = Math.floor(horas);
+        let m = Math.round((horas - h) * 60);
 
         document.getElementById('res-box').style.display = 'block';
         document.getElementById('dist-txt').innerText = km + " KM";
-        document.getElementById('time-txt').innerText = `${horas}h ${mins}m`;
-        document.getElementById('total-txt').innerText = "$" + total.toLocaleString();
-        
-        window.currentData = { ori, des, km, total, horas, mins };
+        document.getElementById('time-txt').innerText = h + "h " + m + "m";
+        document.getElementById('fuel-txt').innerText = "$" + fuelFinal.toFixed(0);
+        document.getElementById('toll-txt').innerText = "$" + tollFinal.toFixed(0);
+        document.getElementById('total-txt').innerText = "$" + total.toLocaleString('es-MX', {minimumFractionDigits:2});
+
+        window.lastSave = { ori, des, km, total, time: h+"h "+m+"m" };
     }
 
-    function compartir() {
-        const d = window.currentData;
-        const msg = `🚩 *REPORTE DE RUTA AI*\n📍 Origen: ${d.ori}\n🏁 Destino: ${d.des}\n📏 Distancia: ${d.km} KM\n⏱️ Tiempo: ${d.horas}h ${d.mins}m\n💰 *Total: $${d.total.toFixed(2)}*\n_¡Buen viaje!_`;
+    function ws() {
+        const s = window.lastSave;
+        const msg = `🚀 *RUTA AI TITANIUM*\n📍 Origen: ${s.ori}\n🏁 Destino: ${s.des}\n📏 Distancia: ${s.km}km\n⏱️ Tiempo: ${s.time}\n💰 *TOTAL: $${s.total.toFixed(2)}*`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 </script>
